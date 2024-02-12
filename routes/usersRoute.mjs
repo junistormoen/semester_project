@@ -2,7 +2,7 @@ import express, { response } from "express";
 import User from "../modules/user.mjs";
 import { HTTPCodes } from "../modules/httpConstants.mjs";
 import SuperLogger from "../modules/SuperLogger.mjs";
-
+import getUserById from "../modules/middleware/getUserByID.mjs";
 
 
 
@@ -18,14 +18,10 @@ USER_API.get('/', (req, res, next) => {
 
 
 
-USER_API.get('/:id', (req, res, next) => {
-    const userID = req.params.id; // Henter id fra forespørselen
+USER_API.get('/:id', getUserById, (req, res, next) => {
 
-    const user = users.find(user => user.id === userID); // Finner brukeren med den angitte ID-en i brukerlisten
+    res.json(req.user); // Returnerer brukeren hvis den finnes.
 
-    if(user){
-        res.json(user); // Returnerer brukeren hvis den finnes.
-    };
 })
 
 USER_API.post('/', (req, res, next) => {
@@ -44,7 +40,7 @@ USER_API.post('/', (req, res, next) => {
         user.pswHash = password;
 
         let exists = false;
-        if(user){
+        if (user) {
             exists = true;
         };
 
