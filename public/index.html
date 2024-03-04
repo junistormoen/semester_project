@@ -9,6 +9,22 @@
 
 
 <body>
+    <div id="divHeader"></div>
+    <div id="divContent"></div>
+    <div id="divFooter"></div>
+
+    <script src="./script/templateLoader.js"></script>
+    <script src="./script/main.js"></script>
+
+    <!--  Templates -->
+    <template id="tpLogin">
+        <form>
+            <input type="text" id="loginMail" placeholder="Email">
+            <input type="password" id="loginPassword" placeholder="Password">
+            <input type="button" value="submit">
+        </form>
+    </template>
+
 
     <div>
         Name : <input type="text" id="name"><br>
@@ -17,26 +33,18 @@
         <button id="createUserButton">Create User</button>
     </div>
 
+
     <script>
-
-
-
-
         const createUserButton = document.getElementById("createUserButton");
 
         createUserButton.onclick = async function (e) {
-
             const name = document.getElementById("name").value;
             const email = document.getElementById("email").value;
             const pswHash = document.getElementById("pswHash").value;
 
             const user = { name, email, pswHash };
 
-            const respon = await postTo("/user", user);
-
-
-
-
+            const response = await postTo("/register", user);
         }
 
 
@@ -49,9 +57,10 @@
                 body: JSON.stringify(data),
             };
 
+            console.log(header.body);
 
-            const respon = await fetch(url, header);
-            return respon;
+            const response = await fetch(url, header);
+            return response;
         }
 
     </script>

@@ -24,6 +24,20 @@ USER_API.get('/:id', getUserById, (req, res, next) => {
 
 })
 
+USER_API.post('/register', async (req, res) => {
+    const { username, email, password } = req.body;
+    try {
+      const result = await pool.query(
+        'INSERT INTO users(username, email, password) VALUES($1, $2, $3) RETURNING *',
+        [username, email, password]
+      );
+      res.status(201).json();
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server error');
+    }
+  });
+
 USER_API.post('/', (req, res, next) => {
 
     // This is using javascript object destructuring.
@@ -32,14 +46,15 @@ USER_API.post('/', (req, res, next) => {
     const { name, email, password } = req.body;
 
     if (name != "" && email != "" && password != "") {
-        const user = new user();
+        const user = new User();
         user.name = name;
         user.email = email;
 
-        ///TODO: Do not save passwords.
+        // TODO: Do not save passwords.
         user.pswHash = password;
 
         let exists = false;
+        // TODO: Check if user exists in database
         if (user) {
             exists = true;
         };

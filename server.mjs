@@ -1,5 +1,6 @@
 import express from 'express' // Express is installed using npm
 import USER_API from './routes/usersRoute.mjs'; // This is where we have defined the API for working with users.
+import db from './db/postgresqlSetup.js';
 
 import SuperLogger from './modules/SuperLogger.mjs';
 // Creating an instance of the server
@@ -27,6 +28,27 @@ server.get("/", (req, res, next) => {
     res.status(200).send(JSON.stringify({ msg: "These are not the droids...." })).end();
 });
 
+
+
+server.post('/register', async (req, res) => {
+    // WHy does not req.body work?
+    console.log(req);
+    const { username, email, password } = req.body;
+    try {
+      const result = await db.query(
+        'INSERT INTO users(username, email, password) VALUES($1, $2, $3) RETURNING *',
+        [username, email, password]
+      );
+      console.log(result);
+      res.status(201).json();
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server error');
+    }
+  });
+
+
+  
 // Start the server 
 server.listen(server.get('port'), function () {
     console.log('server running', server.get('port'));

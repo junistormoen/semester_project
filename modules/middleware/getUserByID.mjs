@@ -1,9 +1,9 @@
-import { HTTPCodes } from "../../httpConstants.mjs";
-import { users } from "../../user.mjs";
+import { HTTPCodes } from "../httpConstants.mjs";
+import  User  from "../user.mjs";
 
 function getUserById(req, res, next) {
   const userId = req.params.id;
-  const user = users.find((user) => user.id === userId);
+  const user = User.find((user) => user.id === userId);
 
   if (user) {
     req.user = user;
