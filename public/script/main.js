@@ -1,4 +1,4 @@
-"user strict"
+/*"user strict"
 
 let divHeader = null;
 let divContent = null;
@@ -10,7 +10,7 @@ function domLoaded(){
 
     divContent = document.getElementById("divContent");
 
-    loadTemplate("tpLogin");
+    loadTemplate("tpLogin", divContent);
 };
 
-
+*/

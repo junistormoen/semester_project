@@ -1,8 +1,12 @@
 import express, { response } from "express";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
 import User from "../modules/user.mjs";
 import { HTTPCodes } from "../modules/httpConstants.mjs";
 import SuperLogger from "../modules/SuperLogger.mjs";
 import getUserById from "../modules/middleware/getUserByID.mjs";
+import db from "../db/postgresqlSetup.js";
 
 
 
@@ -17,28 +21,61 @@ USER_API.get('/', (req, res, next) => {
 })
 
 
-
-USER_API.get('/:id', getUserById, (req, res, next) => {
-
+/*USER_API.get('/:id', getUserById, (req, res, next) => {
     res.json(req.user); // Returnerer brukeren hvis den finnes.
+})*/
 
-})
+USER_API.post("/login", async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        // Sjekk om brukeren eksisterer i databasen
+        const user = await db.query("SELECT * FROM users WHERE email = $1", [
+            email,
+        ]);
+
+        if (user.rows.length === 0) {
+            return res.status(401).json({ message: "Invalid email or password" });
+        };
+
+        // Sammenlign passordet med hashen lagret i databasen
+        if(password !== user.rows[0].pswHash){
+            return res.status(401).json({ message: "Invalid email or password"})
+        };
+
+        // Generer JWT
+        const token = jwt.sign({ userId: user.rows[0].id }, "secret_key", {
+            expiresIn: "1h",
+        });
+
+        // Send JWT til klienten
+        res.json({ token });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Server error");
+    }
+});
+
 
 USER_API.post('/register', async (req, res) => {
-    const { username, email, password } = req.body;
+    const { name, email, pswHash } = req.body;
     try {
-      const result = await pool.query(
-        'INSERT INTO users(username, email, password) VALUES($1, $2, $3) RETURNING *',
-        [username, email, password]
-      );
-      res.status(201).json();
+        const result = await db.query(
+            'INSERT INTO users(name, email, pswHash) VALUES($1, $2, $3) RETURNING *',
+            [name, email, pswHash]
+        );
+        if (result && result.rows) {
+            const respForm = { mesg: "Created user OK", code: 200, data: { userID: result.rows[0].userid } }
+            res.json(respForm);
+        }
     } catch (err) {
-      console.error(err.message);
-      res.status(500).send('Server error');
+        console.error(err.message);
+        res.status(500).send('Server error');
     }
-  });
+});
 
-USER_API.post('/', (req, res, next) => {
+
+/*USER_API.post('/', (req, res, next) => {
 
     // This is using javascript object destructuring.
     // Recomend reading up https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#syntax
@@ -70,7 +107,7 @@ USER_API.post('/', (req, res, next) => {
         res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Mangler data felt").end();
     }
 
-});
+});*/
 
 USER_API.put('/:id', (req, res) => {
     /// TODO: Edit user

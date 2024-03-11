@@ -1,5 +1,5 @@
 
-function loadTemplate(aTemplateID, aDestElement, aEmptyElement = false) {
+/*function loadTemplate(aTemplateID, aDestElement, aEmptyElement = false) {
     const template = document.getElementById(aTemplateID);
 
     if (template.content) {
@@ -20,4 +20,4 @@ function emptyContainerElement(aElement){
         aElement.removeChild(child);
         child = aElement.firstChild;
     }
-}
+}*/
