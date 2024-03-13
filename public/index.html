@@ -41,29 +41,54 @@
     </template>
 
     <template id="tpUserPage">
-        <button id="btnLogout">Logg ut</button>
+        <button id="btnLogOut">Logg ut</button>
         <div id="userInfo"></div>
         <button id="btnEditUser">Rediger</button>
-        <button id="btnDeleteUser">Slett bruker</button>
     </template>
 
+    <template id="tpEditUser">
+        Brukernavn <input id="editName" type="text"> <br>
+        Epost <input id="editEmail" type="text"> <br>
+        <button id="btnSave">Lagre</button>
+        <button id="btnDeleteUser">Slett bruker</button>
+    </template>
 
 
     <!--<script src="./script/templateLoader.js"></script>
     <script src="./script/main.js"></script>-->
 
-
-
     <script>
-        const divContent = document.getElementById("divContent");
 
-        const token = localStorage.getItem("token");
-        console.log(token);
+        function loadPage() {
+            const divContent = document.getElementById("divContent");
+            const token = localStorage.getItem("token");
+            console.log(token);
 
-        if (token) {
-            loadHomeScreen();
+            if (token) {
+                homePage();
+            } else {
+                logIn();
+            };
+        };
 
-        } else {
+        // ------------------------------
+
+        async function homePage() {
+            divContent.innerHTML = document.getElementById("tpHomePage").innerHTML;
+
+            const btnUser = document.getElementById("btnUser");
+            const btnAddRsp = document.getElementById("btnAddRsp");
+
+            btnUser.addEventListener("click", userPage);
+
+            // Profilknapp  -> Logge ut, slette bruker, tilbake
+
+            // Legge til oppskrift, Liste oppskrift navn, redigere oppskrifter, fjerne oppskrifter
+        }
+
+        // ------------------------------
+
+        function logIn() {
             const loginForm = document.getElementById("loginForm");
 
             divContent.innerHTML = document.getElementById("tpLogin").innerHTML;
@@ -80,35 +105,153 @@
 
                 if (response.ok) {
                     const data = await response.json();
+                    console.log(data)
                     localStorage.setItem("token", data.token);
-                    console.log("HEI")
-                    loadHomeScreen();
+                    localStorage.setItem("ID", data.userId);
+                    homePage();
                 } else {
                     const error = await response.json();
                     console.error(error.message);
                 }
             });
 
+            btnNewUser.addEventListener("click", createUser);
+        };
 
-            btnNewUser.addEventListener("click", async function (evt) {
-                divContent.innerHTML = document.getElementById("tpNewUser").innerHTML;
+        // ------------------------------
 
-                const createUserButton = document.getElementById("createUserButton");
-                createUserButton.addEventListener("click", createUser);
-            })
+        async function userPage() {
+            divContent.innerHTML = document.getElementById("tpUserPage").innerHTML;
+
+            const userInfo = document.getElementById("userInfo");
+
+            const userID = localStorage.getItem("ID");
+            const response = await fetch("/user/profile", {
+                method: "GET",
+                headers: {
+                    "ID": userID
+                }
+            });
+
+            if (response.ok) {
+                const userData = await response.json();
+                userInfo.innerHTML = `
+                    <p>Brukernavn: ${userData.name}</p>
+                    <p>Epost: ${userData.email}</p>   
+                `;
+            } else {
+                console.error("Failed to fetch user profile");
+            };
+
+            const btnLogOut = document.getElementById("btnLogOut");
+            const btnEditUser = document.getElementById("btnEditUser");
+
+            btnLogOut.addEventListener("click", function (evt) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("ID");
+                logIn();
+            });
+
+            btnEditUser.addEventListener("click", editUser)
 
         }
+
+        // ------------------------------
 
         async function createUser() {
-            const name = document.getElementById("name").value;
-            const email = document.getElementById("email").value;
-            const pswHash = document.getElementById("pswHash").value;
+            divContent.innerHTML = document.getElementById("tpNewUser").innerHTML;
+            const createUserButton = document.getElementById("createUserButton");
 
-            const user = { name, email, pswHash };
+            createUserButton.addEventListener("click", async function (evt) {
+                const name = document.getElementById("name").value;
+                const email = document.getElementById("email").value;
+                const pswHash = document.getElementById("pswHash").value;
 
-            const response = await postTo("/user/register", user);
+                const user = { name, email, pswHash };
+
+                const response = await postTo("/user/register", user);
+                logIn();
+            });
+        };
+
+        // ------------------------------
+
+        async function editUser() {
+            divContent.innerHTML = document.getElementById("tpEditUser").innerHTML;
+
+            const token = localStorage.getItem("token");
+            const userID = localStorage.getItem("ID");
+
+            const userName = document.getElementById("editName");
+            const userEmail = document.getElementById("editEmail");
+
+            const response = await fetch("/user/profile", {
+                method: "GET",
+                headers: {
+                    "ID": userID
+                }
+            });
+
+            if (response.ok) {
+                const userData = await response.json();
+                userName.value = userData.name;
+                userEmail.value = userData.email;
+            } else {
+                console.error("Failed to fetch user profile");
+            };
+
+
+            const btnSave = document.getElementById("btnSave")
+            btnSave.addEventListener("click", async function () {
+                const name = document.getElementById("editName").value;
+                const email = document.getElementById("editEmail").value;
+
+                const response = await fetch("/user/profile", {
+                    method: "PUT",
+                    headers: {
+                        "ID": userID,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ name, email })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log(result);
+                    userPage();
+                } else {
+                    console.error("Failed to update user information");
+                }
+            })
+
+            const btnDeleteUser = document.getElementById("btnDeleteUser");
+            btnDeleteUser.addEventListener("click", deleteUser)
         }
 
+        // ------------------------------
+
+        async function deleteUser() {
+            const confirmation = confirm("Er du sikker på at du ønsker å slette brukeren din?")
+
+            if (confirmation) {
+                const token = localStorage.getItem("token");
+                const userID = localStorage.getItem("ID");
+                const response = await fetch("/user/profile", {
+                    method: "DELETE",
+                    headers: {
+                        "ID": userID
+                    }
+                });
+
+                if (response.ok) {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("ID");
+                    logIn();
+                } else {
+                    console.error("Failed to delete user");
+                }
+            }
+        }
 
         async function postTo(url, data) {
             const header = {
@@ -125,14 +268,9 @@
             return response;
         }
 
-        async function loadHomeScreen() {
-            divContent.innerHTML = document.getElementById("tpHomePage").innerHTML;
+        // ------------------------------
 
-
-            // Profilknapp  -> Logge ut, slette bruker, tilbake
-
-            // Legge til oppskrift, Liste oppskrift navn, redigere oppskrifter, fjerne oppskrifter
-        }
+        loadPage();
 
     </script>
 
