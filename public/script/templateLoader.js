@@ -1,5 +1,4 @@
-
-/*function loadTemplate(aTemplateID, aDestElement, aEmptyElement = false) {
+function loadTemplate(aTemplateID, aDestElement, aEmptyElement = false) {
     const template = document.getElementById(aTemplateID);
 
     if (template.content) {
@@ -9,10 +8,9 @@
         };
         aDestElement.appendChild(clone);
     } else {
-        console("Browseren din støtter ikke templates.");
+        console.log("Browseren støtter ikke template");
     };
 };
-
 
 function emptyContainerElement(aElement){
     let child = aElement.firstChild;
@@ -20,4 +18,4 @@ function emptyContainerElement(aElement){
         aElement.removeChild(child);
         child = aElement.firstChild;
     }
-}*/
+}

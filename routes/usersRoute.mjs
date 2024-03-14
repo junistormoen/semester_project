@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 import User from "../modules/user.mjs";
 import { HTTPCodes } from "../modules/httpConstants.mjs";
 import SuperLogger from "../modules/SuperLogger.mjs";
-import getUserById from "../modules/middleware/getUserByID.mjs";
+import decodeToken from "../modules/middleware/decodeToken.mjs";
 import db from "../db/postgresqlSetup.js";
 
 
@@ -18,20 +18,17 @@ const users = [];
 USER_API.get('/', (req, res, next) => {
     SuperLogger.log("Demo of logging tool");
     SuperLogger.log("A important msg", SuperLogger.LOGGING_LEVELS.CRTICAL);
-})
+});
 
-
-/*USER_API.get('/:id', getUserById, (req, res, next) => {
-    res.json(req.user); // Returnerer brukeren hvis den finnes.
-})*/
 
 USER_API.get("/profile", async (req, res) => {
     try {
-        /*const token = req.header("Authorization");
+        const token = req.header("authorization");
         console.log(token)
         const decoded = jwt.verify(token, "secret_key");
-        console.log(decoded)*/
-        const userId = req.header("ID")
+        console.log(decoded)
+        const userId = decoded.userId;
+        console.log(userId);
         const user = await db.query(
             "SELECT * FROM users WHERE userid = $1", 
             [userId]
@@ -72,10 +69,10 @@ USER_API.post("/login", async (req, res) => {
         };
 
         // Generer JWT
-        const token = jwt.sign({ userId: user.rows[0].id }, "secret_key");
+        const token = jwt.sign({ userId: user.rows[0].userid }, "secret_key");
 
         // Send JWT til klienten
-        res.json({ token , userId: user.rows[0].userid});
+        res.json({ token });
     } catch (error) {
         console.error(error.message);
         res.status(500).send("Server error");
@@ -103,11 +100,11 @@ USER_API.post('/register', async (req, res) => {
 
 USER_API.put('/profile', async (req, res) => {
     try {
-        /*const token = req.header("Authorization");
+        const token = req.header("authorization");
         console.log(token)
         const decoded = jwt.verify(token, "secret_key");
-        console.log(decoded)*/
-        const userId = req.header("ID");
+        console.log(decoded)
+        const userId = decoded.userId;
 
         const { name, email } = req.body;
         
@@ -125,11 +122,11 @@ USER_API.put('/profile', async (req, res) => {
 
 USER_API.delete('/profile', async (req, res) => {
     try {
-        /*const token = req.header("Authorization");
+        const token = req.header("authorization");
         console.log(token)
         const decoded = jwt.verify(token, "secret_key");
-        console.log(decoded)*/
-        const userId = req.header("ID");
+        console.log(decoded)
+        const userId = decoded.userId;
         
         const user = await db.query(
             "DELETE FROM users WHERE userid = $1",
