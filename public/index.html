@@ -9,6 +9,7 @@
     <script src="./script/templateLoader.js"></script>
     <script src="./script/pages.js"></script>
     <script src="./script/user.js"></script>
+    <script src="./script/recepies.js"></script>
 </head>
 
 <body>
@@ -41,8 +42,13 @@
     <template id="tpHomePage">
         <button id="btnAddRsp">Ny oppskrift</button>
         <button id="btnUser">Min Bruker</button>
-        <div id="recepiesContainer"></div>
+        <div id="recipesContainer"></div>
     </template>
+
+    <template id="tpAddRecipes">
+        <input id="name" lable="navn">
+        <input id="ingredients">
+        <input id="description">
 
     <template id="tpUserPage">
         <button id="btnHome">Hjem</button>

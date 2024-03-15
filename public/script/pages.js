@@ -25,10 +25,10 @@ async function homePage() {
     const btnUser = document.getElementById("btnUser");
     const btnAddRsp = document.getElementById("btnAddRsp");
 
-    let recepiesContainer = document.getElementById("recepiesContainer");
+    let recepiesContainer = document.getElementById("recipesContainer");
 
     /*const token = localStorage.getItem("token")
-    const response = await fetch("/user/profile", {
+    const response = await fetch("/user/recipes", {
         method: "GET",
         headers: {
             "authorization": token
@@ -44,11 +44,13 @@ async function homePage() {
         console.error("Failed to recepies");
     };*/
 
-    if(!recepiesContainer.innerHTML){
+    if (!recepiesContainer.innerHTML) {
         recepiesContainer.innerHTML = "Du har ingen oppskrifter"
     };
 
-btnUser.addEventListener("click", userPage);
+    btnAddRsp.addEventListener("click", addRecipe)
+    btnUser.addEventListener("click", userPage);
+
 
     // Legge til oppskrift, Liste oppskrift navn, redigere oppskrifter, fjerne oppskrifter
 }
