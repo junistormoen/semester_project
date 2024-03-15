@@ -129,6 +129,7 @@ USER_API.put('/profile', async (req, res) => {
     }
 })
 
+
 USER_API.delete('/profile', async (req, res) => {
     try {
         const token = req.header("authorization");
@@ -165,6 +166,30 @@ USER_API.get("/recipes", async (req, res) => {
 
         // Send oppskriftene til klienten
         res.json(userRecipes.rows);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Server error");
+    }
+});
+
+
+
+USER_API.post("/recipes", async (req, res) => {
+    try {
+        const token = req.header("authorization");
+        const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+        const userId = decoded.userId;
+
+        const { name, ingredients, description } = req.body;
+
+        // Utfør SQL-innstikket for å legge til oppskriften
+        await db.query(
+            "INSERT INTO recipes (name, ingredients, description, userid) VALUES ($1, $2, $3, $4)",
+            [name, ingredients, description, userId]
+        );
+
+        // Send tilbakemelding til klienten
+        res.json({ message: "Recipe added successfully" });
     } catch (error) {
         console.error(error.message);
         res.status(500).send("Server error");
