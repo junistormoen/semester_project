@@ -49,7 +49,6 @@ async function editUser() {
     loadTemplate("tpEditUser", divContent, true);
 
     const token = localStorage.getItem("token");
-    const userID = localStorage.getItem("ID");
 
     const userName = document.getElementById("editName");
     const userEmail = document.getElementById("editEmail");
