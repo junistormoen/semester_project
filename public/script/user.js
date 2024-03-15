@@ -28,7 +28,7 @@ function logoutUser() {
 // ------------------------------
 
 async function createUser() {
-    divContent.innerHTML = document.getElementById("tpNewUser").innerHTML;
+    loadTemplate("tpNewUser", divContent, true);
     const createUserButton = document.getElementById("createUserButton");
 
     createUserButton.addEventListener("click", async function (evt) {
@@ -39,14 +39,14 @@ async function createUser() {
         const user = { name, email, pswHash };
 
         const response = await postTo("/user/register", user);
-        logIn();
+        loginUser();
     });
 };
 
 // ------------------------------
 
 async function editUser() {
-    divContent.innerHTML = document.getElementById("tpEditUser").innerHTML;
+    loadTemplate("tpEditUser", divContent, true);
 
     const token = localStorage.getItem("token");
     const userID = localStorage.getItem("ID");
@@ -120,6 +120,9 @@ async function deleteUser() {
         }
     }
 }
+
+
+// ------------------------------
 
 async function postTo(url, data) {
     const header = {

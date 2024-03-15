@@ -25,9 +25,30 @@ async function homePage() {
     const btnUser = document.getElementById("btnUser");
     const btnAddRsp = document.getElementById("btnAddRsp");
 
-    btnUser.addEventListener("click", userPage);
+    let recepiesContainer = document.getElementById("recepiesContainer");
 
-    // Profilknapp  -> Logge ut, slette bruker, tilbake
+    /*const token = localStorage.getItem("token")
+    const response = await fetch("/user/profile", {
+        method: "GET",
+        headers: {
+            "authorization": token
+        }
+    });
+
+    if (response.ok) {
+        const userData = await response.json();
+        for(let data of userData){
+            recepiesContainer.innerHTML += data;
+        }
+    } else {
+        console.error("Failed to recepies");
+    };*/
+
+    if(!recepiesContainer.innerHTML){
+        recepiesContainer.innerHTML = "Du har ingen oppskrifter"
+    };
+
+btnUser.addEventListener("click", userPage);
 
     // Legge til oppskrift, Liste oppskrift navn, redigere oppskrifter, fjerne oppskrifter
 }
@@ -69,13 +90,19 @@ async function userPage() {
         `;
     } else {
         console.error("Failed to fetch user profile");
+        localStorage.clear();
+        location.reload();
+        return;
     };
 
-    const btnLogOut = document.getElementById("btnLogOut");
+    const btnHome = document.getElementById("btnHome");
     const btnEditUser = document.getElementById("btnEditUser");
+    const btnLogOut = document.getElementById("btnLogOut");
 
-    btnLogOut.addEventListener("click", logoutUser);
+    btnHome.addEventListener("click", homePage);
     btnEditUser.addEventListener("click", editUser);
+    btnLogOut.addEventListener("click", logoutUser);
+
 }
 
 // ------------------------------
