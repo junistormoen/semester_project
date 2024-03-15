@@ -25,7 +25,7 @@ class DB {
 }
 
 
-/*
+
 const { Pool } = pg;
 const db = new Pool({
   user: 'junistormoen',
@@ -34,6 +34,6 @@ const db = new Pool({
   password: 'juni',
   port: 5432,
 });
-*/
+
 
 export default new DB();

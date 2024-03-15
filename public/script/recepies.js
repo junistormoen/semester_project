@@ -5,6 +5,7 @@ function addRecipe() {
     const btnAddRes = document.getElementById("btnAdd");
 
     btnAddRes.addEventListener("click", async function (evt) {
+        console.log("inne")
         const token = localStorage.getItem("token");
 
         const name = document.getElementById("name").value;
@@ -12,16 +13,19 @@ function addRecipe() {
         const description = document.getElementById("description").value;
 
         const recipe = { name, ingredients, description};
+        console.log(JSON.stringify(recipe))
 
         const response = await fetch("/user/recipes", {
             method: "POST", 
-            header: {
+            headers: {
                 "authorization": token,
             },
             body: JSON.stringify(recipe)
         })
 
         if(response.ok){
+            const userData = await response.json();
+            console.log(userData + "HEI")
             console.log("Oppskrift lagt til")
             homePage();
         } else (

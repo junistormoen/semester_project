@@ -180,7 +180,12 @@ USER_API.post("/recipes", async (req, res) => {
         const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
         const userId = decoded.userId;
 
+        console.log(userId)
+        
+        console.log(req.body);
+
         const { name, ingredients, description } = req.body;
+        
 
         // Utfør SQL-innstikket for å legge til oppskriften
         await db.query(
