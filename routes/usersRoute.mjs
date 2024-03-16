@@ -1,4 +1,5 @@
 import express, { response } from "express";
+import bodyParser from 'body-parser';
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -50,9 +51,9 @@ USER_API.get("/profile", async (req, res) => {
         console.log("FEIL");
         console.error(error.message);
 
-        if(decoded){
+        if (decoded) {
             res.status(500).send("Server error");
-        }else{
+        } else {
             res.status(HTTPCodes.ClientSideErrorRespons.Unauthorized).send("Hello hacker!!!");
         }
     };
@@ -91,6 +92,7 @@ USER_API.post("/login", async (req, res) => {
 
 USER_API.post('/register', async (req, res) => {
     const { name, email, pswHash } = req.body;
+    console.log(name, email, pswHash)
     try {
         const result = await db.query(
             'INSERT INTO users(name, email, pswHash) VALUES($1, $2, $3) RETURNING *',
@@ -152,6 +154,32 @@ USER_API.delete('/profile', async (req, res) => {
 })
 
 
+
+USER_API.post("/recipes", async (req, res) => {
+    try {
+        const token = req.header("authorization");
+        const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+        const userId = decoded.userId;
+
+        const { name, ingredients, descriptions } = req.body;
+
+        // Utfør SQL-innstikket for å legge til oppskriften
+        await db.query(
+            "INSERT INTO recipes (name, ingredients, description, userid) VALUES ($1, $2, $3, $4)",
+            [name, ingredients, descriptions, userId]
+        );
+
+        // Send tilbakemelding til klienten
+        res.json({ message: "Recipe added successfully" });
+
+
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Server error");
+    }
+
+});
+
 USER_API.get("/recipes", async (req, res) => {
     try {
         const token = req.header("authorization");
@@ -173,32 +201,34 @@ USER_API.get("/recipes", async (req, res) => {
 });
 
 
-
-USER_API.post("/recipes", async (req, res) => {
+USER_API.get('/recipe', async (req, res) => {
     try {
+        const recipeid = req.header("recipeid");
         const token = req.header("authorization");
         const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
         const userId = decoded.userId;
 
-        console.log(userId)
-        
-        console.log(req.body);
+        console.log(recipeid)
 
-        const { name, ingredients, description } = req.body;
-        
-
-        // Utfør SQL-innstikket for å legge til oppskriften
-        await db.query(
-            "INSERT INTO recipes (name, ingredients, description, userid) VALUES ($1, $2, $3, $4)",
-            [name, ingredients, description, userId]
+        // Hent alle oppskriftene til brukeren
+        const userRecipes = await db.query(
+            "SELECT * FROM recipes WHERE userid = $1 AND recipeid = $2",
+            [userId, recipeid]
         );
 
-        // Send tilbakemelding til klienten
-        res.json({ message: "Recipe added successfully" });
+        if (userRecipes.rows.length === 0) {
+            return res.status(404).json({ error: 'Recipe not found' });
+        }
+
+        // Send oppskriftene til klienten
+        res.json(userRecipes.rows);
     } catch (error) {
         console.error(error.message);
         res.status(500).send("Server error");
     }
+
 });
 
+
 export default USER_API
+

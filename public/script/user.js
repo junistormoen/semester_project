@@ -39,7 +39,7 @@ async function createUser() {
         const user = { name, email, pswHash };
 
         const response = await postTo("/user/register", user);
-        loginUser();
+        loginPage();
     });
 };
 

@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", loadPage);
 function loadPage() {
     divContent = document.getElementById("divContent");
     const token = localStorage.getItem("token");
-    console.log("hei")
     if (token) {
         homePage();
     } else {
@@ -27,7 +26,7 @@ async function homePage() {
 
     let recepiesContainer = document.getElementById("recipesContainer");
 
-    /*const token = localStorage.getItem("token")
+    const token = localStorage.getItem("token")
     const response = await fetch("/user/recipes", {
         method: "GET",
         headers: {
@@ -36,13 +35,20 @@ async function homePage() {
     });
 
     if (response.ok) {
-        const userData = await response.json();
-        for(let data of userData){
-            recepiesContainer.innerHTML += data;
+        const recipeData = await response.json();
+
+        for (let data of recipeData) {
+            const recipeName = document.createElement("p")
+            recipeName.innerHTML = data.name;
+            recepiesContainer.appendChild(recipeName)
+
+            recipeName.addEventListener("click", function () {
+                recipePage(data.recipeid)
+            })
         }
     } else {
         console.error("Failed to recepies");
-    };*/
+    };
 
     if (!recepiesContainer.innerHTML) {
         recepiesContainer.innerHTML = "Du har ingen oppskrifter"
@@ -109,7 +115,71 @@ async function userPage() {
 
 // ------------------------------
 
+async function recipePage(recipeID) {
+    loadTemplate("tpRecipePage", divContent, true);
+    const btnHome = document.getElementById("btnHome");
 
+    const nameContainer = document.getElementById("nameContainer");
+    const ingredientContainer = document.getElementById("ingredientContainer");
+    const descriptionContainer = document.getElementById("descriptionContainer");
+
+    const token = localStorage.getItem("token");
+    const response = await fetch("/user/recipe", {
+        method: "GET",
+        headers: {
+            "authorization": token,
+            "recipeid": recipeID
+        }
+    });
+
+
+    if (response.ok) {
+        const recipeData = await response.json();
+
+
+        if (recipeData.length > 0) {
+            const recipe = recipeData[0];
+
+            console.log(recipe)
+            const recipeName = document.createElement("h2");
+            const recipeIngr = document.createElement("p");
+            const recipeDescr = document.createElement("p");
+
+            recipeName.innerHTML = recipe.name;
+            nameContainer.appendChild(recipeName);
+
+            const ingredients = JSON.parse(recipe.ingredients);
+            for (let key in ingredients) {
+                console.log(ingredients[key])
+                const ingredient = document.createElement("p");
+
+                ingredient.innerHTML = ingredients[key].quantity + ingredients[key].value + " " + ingredients[key].type;
+
+                ingredientContainer.appendChild(ingredient)
+            };
+
+            
+            const descriptions = JSON.parse(recipe.description);
+            for (let key in descriptions) {
+                console.log(descriptions[key])
+                const description = document.createElement("p");
+
+                description.innerHTML = key + ". " + descriptions[key].info;
+
+                ingredientContainer.appendChild(description)
+            };
+
+        } else {
+            console.error("No recipe data found");
+        }
+
+
+    } else {
+        console.error("Failed to fetch recipe");
+    };
+
+    btnHome.addEventListener("click", homePage)
+}
 
 
 

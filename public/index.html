@@ -46,10 +46,31 @@
     </template>
 
     <template id="tpAddRecipes">
-       Navn: <input type="text" id="name"> <br>
-       Ingredienser: <input type="text" id="ingredients"> <br>
-       Fremgangsmåte: <input type="text" id="description"> <br>
-       <button id="btnAdd">Legg til</button>
+        <p>Navn</p>
+        <input type="text" id="name">
+        <br> <br>
+        <p>Ingredienser</p>
+        <input type="number" id="quant">
+        <select id="val">
+            <option value="stk">stk</option>
+            <option value="ts">ts</option>
+            <option value="ss">ss</option>
+            <option value="g">g</option>
+            <option value="kg">kg</option>
+            <option value="dl">dl</option>
+            <option value="ml">ml</option>
+            <option value="cl">cl</option>
+        </select>
+        <input type="text" id="ingredient">
+        <button id="addIngredient"> Legg til</button>
+        <div id="ingredientContainer"></div>
+        <br><br>
+        <p>Fremgangsmåte</p>
+        <input type="text" id="description">
+        <button id="addDescription">Legg til</button>
+        <div id="descriptionContainer"></div>
+        <br> <br>
+        <button id="btnAdd">Lagre oppskrift</button>
     </template>
 
     <template id="tpUserPage">
@@ -64,6 +85,13 @@
         Epost <input id="editEmail" type="text"> <br>
         <button id="btnSave">Lagre</button>
         <button id="btnDeleteUser">Slett bruker</button>
+    </template>
+
+    <template id="tpRecipePage">
+        <button id="btnHome">Hjem</button>
+        <div id="nameContainer"></div>
+        <div id="ingredientContainer"></div>
+        <div id="descriptionContainer"></div>
     </template>
 
 </body>
