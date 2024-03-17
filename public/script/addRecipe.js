@@ -1,4 +1,3 @@
-
 function addRecipe() {
     loadTemplate("tpAddRecipes", divContent, true);
 
@@ -21,6 +20,7 @@ function addRecipe() {
 
         ingredient = { quantity: quant, value: val, type: type };
         ingredients[iIndex] = ingredient;
+        console.log(ingredients)
 
 
         const printIngredient = document.createElement("p");
@@ -72,6 +72,5 @@ function addRecipe() {
         } else (
             console.log("Problemer")
         )
-
     })
 }

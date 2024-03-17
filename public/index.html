@@ -9,7 +9,9 @@
     <script src="./script/templateLoader.js"></script>
     <script src="./script/pages.js"></script>
     <script src="./script/user.js"></script>
-    <script src="./script/recepies.js"></script>
+    <script src="./script/loadRecipe.js"></script>
+    <script src="./script/editRecipe.js"></script>
+    <script src="./script/addRecipe.js"></script>
 </head>
 
 <body>
@@ -34,7 +36,7 @@
         <form id="newUserForm">
             Name : <input type="text" id="name"><br>
             Email: <input type="email" id="email"><br />
-            Password: <input type="password" id="pswHash"><br />
+            Password: <input type="password" id="password"><br />
             <button type="submit" id="createUserButton">Create User</button>
         </form>
     </template>
@@ -87,14 +89,51 @@
         <button id="btnDeleteUser">Slett bruker</button>
     </template>
 
-    <template id="tpRecipePage">
+    <template id="tpLoadRecipe">
         <button id="btnHome">Hjem</button>
+        <button id="btnEdit">Rediger</button>
         <div id="nameContainer"></div>
-        <div id="ingredientContainer"></div>
-        <div id="descriptionContainer"></div>
+        <div id="ingredientContainer">
+            <h4>Ingredienser</h4>
+        </div>
+        <br>
+        <div id="descriptionContainer">
+            <h4>Fremgangsmåte</h4>
+        </div>
     </template>
+
+    <template id="tpEditRecipe">
+        <button id="btnHome">Hjem</button>
+        <button id="btnDelete">Slett oppskrift</button>
+        <br>
+        <div id="nameContainer"></div>
+        <h4>Ingredienser</h4>
+        <input type="number" id="quant">
+        <select id="val">
+            <option value="stk">stk</option>
+            <option value="ts">ts</option>
+            <option value="ss">ss</option>
+            <option value="g">g</option>
+            <option value="kg">kg</option>
+            <option value="dl">dl</option>
+            <option value="ml">ml</option>
+            <option value="cl">cl</option>
+        </select>
+        <input type="text" id="type">
+        <button id="addIngredient">+</button>
+        <div id="ingredientContainer"></div>
+        <br>
+        <h4>Fremgangsmåte</h4>
+        <input id="newDescription">
+        <button id="addDescription">+</button>
+        <div id="descriptionContainer"></div>
+        <button id="btnSave">Lagre endringer</button>
+    </template>
+
 
 </body>
 
 </html>
+
+<!-- https://semester-project-nul3.onrender.com -->
 

@@ -1,23 +1,17 @@
 import express, { response } from "express";
 import bodyParser from 'body-parser';
-import bcrypt from "bcrypt";
+import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config()
 
-import User from "../modules/user.mjs";
 import { HTTPCodes } from "../modules/httpConstants.mjs";
 import SuperLogger from "../modules/SuperLogger.mjs";
 import decodeToken from "../modules/decodeToken.mjs";
 import db from "../db/postgresqlSetup.js";
 
-
-
-
 const USER_API = express.Router();
 USER_API.use(express.json()); // This makes it so that express parses all incoming payloads as JSON for this route.
-
-const users = [];
 
 USER_API.get('/', (req, res, next) => {
     SuperLogger.log("Demo of logging tool");
@@ -61,9 +55,9 @@ USER_API.get("/profile", async (req, res) => {
 
 
 USER_API.post("/login", async (req, res) => {
-    const { email, password } = req.body;
-
     try {
+        const { email, password } = req.body;
+
         // Sjekk om brukeren eksisterer i databasen
         const user = await db.query("SELECT * FROM users WHERE email = $1", [
             email,
@@ -74,7 +68,14 @@ USER_API.post("/login", async (req, res) => {
         };
 
         // Sammenlign passordet med hashen lagret i databasen
-        if (password !== user.rows[0].pswHash) {
+        const pswHash = user.rows[0].pswhash;
+        const salt = user.rows[0].salt;
+
+        const hash = await crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
+        console.log(hash);
+        
+
+        if (hash !== pswHash) {
             return res.status(401).json({ message: "Invalid email or password" })
         };
 
@@ -89,14 +90,26 @@ USER_API.post("/login", async (req, res) => {
     }
 });
 
+function verifyPassword(password, storedPswHash, storedSalt) {
+    const hash = crypto.pbkdf2Sync(password, storedSalt, 1000, 64, 'sha512').toString('hex');
+    return hash === storedPswHash;
+}
+
 
 USER_API.post('/register', async (req, res) => {
-    const { name, email, pswHash } = req.body;
-    console.log(name, email, pswHash)
     try {
+        const { name, email, password } = req.body;
+
+        const salt = crypto.randomBytes(16).toString('hex');
+
+        const pswHash = await crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
+
+        console.log(password)
+        console.log(pswHash)
+
         const result = await db.query(
-            'INSERT INTO users(name, email, pswHash) VALUES($1, $2, $3) RETURNING *',
-            [name, email, pswHash]
+            'INSERT INTO users(name, email, pswHash, salt) VALUES($1, $2, $3, $4) RETURNING *',
+            [name, email, pswHash, salt]
         );
         if (result && result.rows) {
             const respForm = { mesg: "Created user OK", code: 200, data: { userID: result.rows[0].userid } }
@@ -203,7 +216,7 @@ USER_API.get("/recipes", async (req, res) => {
 
 USER_API.get('/recipe', async (req, res) => {
     try {
-        const recipeid = req.header("recipeid");
+        const recipeid = req.header("recipeId");
         const token = req.header("authorization");
         const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
         const userId = decoded.userId;
@@ -229,6 +242,48 @@ USER_API.get('/recipe', async (req, res) => {
 
 });
 
+
+USER_API.put('/recipe', async (req, res) => {
+    try {
+        const token = req.header("authorization");
+        const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+        const userId = decoded.userId;
+        const recipeId = req.header("recipeid");
+
+        const { name, ingredients, description } = req.body;
+
+        await db.query(
+            "UPDATE recipes SET name = $1, ingredients = $2, description = $3 WHERE userid = $4 AND recipeid = $5",
+            [name, ingredients, description, userId, recipeId]
+        );
+
+        res.json({ message: "User information updated successfully" });
+    } catch {
+        console.error(error.message);
+        res.status(500).send("Server error");
+    }
+});
+
+
+USER_API.delete('/recipe', async (req, res) => {
+    try {
+        const token = req.header("authorization");
+        const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+        const userId = decoded.userId;
+        const recipeId = req.header("recipeid");
+
+        await db.query(
+            "DELETE FROM recipes WHERE userid = $1 AND recipeid = $2",
+            [userId, recipeId]
+        );
+
+        res.json({ message: "User deleted successfully" });
+
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Server error")
+    };
+})
 
 export default USER_API
 

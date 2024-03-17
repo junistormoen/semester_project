@@ -3,9 +3,19 @@ async function loginUser(evt) {
     evt.preventDefault();
 
     const email = document.getElementById("loginMail").value;
-    const pswHash = document.getElementById("loginPassword").value;
+    const password = document.getElementById("loginPassword").value;
 
-    const response = await postTo("/user/login", { email, pswHash });
+    const user = { email, password }
+
+    const response = await fetch("/user/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+    });
+
+    console.log(response)
 
     if (response.ok) {
         const data = await response.json();
@@ -34,12 +44,24 @@ async function createUser() {
     createUserButton.addEventListener("click", async function (evt) {
         const name = document.getElementById("name").value;
         const email = document.getElementById("email").value;
-        const pswHash = document.getElementById("pswHash").value;
+        const password = document.getElementById("password").value;
 
-        const user = { name, email, pswHash };
+        const user = { name, email, password };
 
-        const response = await postTo("/user/register", user);
-        loginPage();
+        const response = await fetch("/user/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(user),
+        });
+
+        if (response.ok) {
+            loginPage();
+        } else {
+            console.error("Failed to fetch user profile");
+        };
+    
     });
 };
 
@@ -123,19 +145,4 @@ async function deleteUser() {
 
 // ------------------------------
 
-async function postTo(url, data) {
-    const header = {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-    };
 
-    console.log(header.body);
-
-    const response = await fetch(url, header);
-    return response;
-}
-
-// ------------------------------

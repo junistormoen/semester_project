@@ -43,7 +43,8 @@ async function homePage() {
             recepiesContainer.appendChild(recipeName)
 
             recipeName.addEventListener("click", function () {
-                recipePage(data.recipeid)
+                localStorage.setItem("recipeId", data.recipeid)
+                loadRecipe(false);
             })
         }
     } else {
@@ -57,8 +58,6 @@ async function homePage() {
     btnAddRsp.addEventListener("click", addRecipe)
     btnUser.addEventListener("click", userPage);
 
-
-    // Legge til oppskrift, Liste oppskrift navn, redigere oppskrifter, fjerne oppskrifter
 }
 
 // ------------------------------
@@ -114,72 +113,6 @@ async function userPage() {
 }
 
 // ------------------------------
-
-async function recipePage(recipeID) {
-    loadTemplate("tpRecipePage", divContent, true);
-    const btnHome = document.getElementById("btnHome");
-
-    const nameContainer = document.getElementById("nameContainer");
-    const ingredientContainer = document.getElementById("ingredientContainer");
-    const descriptionContainer = document.getElementById("descriptionContainer");
-
-    const token = localStorage.getItem("token");
-    const response = await fetch("/user/recipe", {
-        method: "GET",
-        headers: {
-            "authorization": token,
-            "recipeid": recipeID
-        }
-    });
-
-
-    if (response.ok) {
-        const recipeData = await response.json();
-
-
-        if (recipeData.length > 0) {
-            const recipe = recipeData[0];
-
-            console.log(recipe)
-            const recipeName = document.createElement("h2");
-            const recipeIngr = document.createElement("p");
-            const recipeDescr = document.createElement("p");
-
-            recipeName.innerHTML = recipe.name;
-            nameContainer.appendChild(recipeName);
-
-            const ingredients = JSON.parse(recipe.ingredients);
-            for (let key in ingredients) {
-                console.log(ingredients[key])
-                const ingredient = document.createElement("p");
-
-                ingredient.innerHTML = ingredients[key].quantity + ingredients[key].value + " " + ingredients[key].type;
-
-                ingredientContainer.appendChild(ingredient)
-            };
-
-            
-            const descriptions = JSON.parse(recipe.description);
-            for (let key in descriptions) {
-                console.log(descriptions[key])
-                const description = document.createElement("p");
-
-                description.innerHTML = key + ". " + descriptions[key].info;
-
-                ingredientContainer.appendChild(description)
-            };
-
-        } else {
-            console.error("No recipe data found");
-        }
-
-
-    } else {
-        console.error("Failed to fetch recipe");
-    };
-
-    btnHome.addEventListener("click", homePage)
-}
 
 
 
