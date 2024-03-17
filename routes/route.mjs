@@ -1,17 +1,14 @@
 import express, { response } from "express";
-import bodyParser from 'body-parser';
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config()
-
 import { HTTPCodes } from "../modules/httpConstants.mjs";
 import SuperLogger from "../modules/SuperLogger.mjs";
-import decodeToken from "../modules/decodeToken.mjs";
 import db from "../db/postgresqlSetup.js";
 
 const USER_API = express.Router();
-USER_API.use(express.json()); // This makes it so that express parses all incoming payloads as JSON for this route.
+USER_API.use(express.json()); 
 
 USER_API.get('/', (req, res, next) => {
     SuperLogger.log("Demo of logging tool");
