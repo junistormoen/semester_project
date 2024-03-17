@@ -58,7 +58,6 @@ async function deleteUser() {
 
     if (confirmation) {
         const token = localStorage.getItem("token");
-        const userID = localStorage.getItem("ID");
         const response = await fetch("/user/profile", {
             method: "DELETE",
             headers: {
@@ -68,7 +67,7 @@ async function deleteUser() {
 
         if (response.ok) {
             localStorage.removeItem("token");
-            loginPage();
+            login();
         } else {
             console.error("Failed to delete user");
         }

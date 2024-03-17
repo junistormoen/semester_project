@@ -145,12 +145,15 @@ USER_API.put('/profile', async (req, res) => {
 USER_API.delete('/profile', async (req, res) => {
     try {
         const token = req.header("authorization");
-        console.log(token)
         const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
-        console.log(decoded)
         const userId = decoded.userId;
 
-        const user = await db.query(
+        await db.query(
+            "DELETE FROM recipes WHERE userid = $1",
+            [userId]
+        );
+
+        await db.query(
             "DELETE FROM users WHERE userid = $1",
             [userId]
         );
