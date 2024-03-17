@@ -1,0 +1,35 @@
+#btnAddRsp,
+#btnUser {
+    background-color: #b871c2;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+#btnAddRsp:hover,
+#btnUser:hover {
+    background-color: #8d3fa0;
+}
+
+#recipesContainer {
+    margin-top: 20px;
+}
+
+#recipesContainer p {
+    cursor: pointer;
+    margin-bottom: 5px;
+}
+
+#recipesContainer p:hover {
+    text-decoration: underline;
+}
+
+#recipesContainer:empty::after {
+    content: "Du har ingen oppskrifter";
+    display: block;
+    margin-top: 10px;
+    color: #555;
+}

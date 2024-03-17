@@ -1,0 +1,30 @@
+
+#ingredientContainer,
+#descriptionContainer {
+    margin-top: 20px;
+}
+
+#ingredientContainer p,
+#descriptionContainer p {
+    margin-bottom: 5px;
+}
+
+#btnAddIngredient,
+#btnAddDescription,
+#btnAdd,
+#btnHome {
+    background-color: #b871c2;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+#btnAddIngredient:hover,
+#btnAddDescription:hover,
+#btnAdd:hover,
+#btnHome {
+    background-color: #8d3fa0;
+}

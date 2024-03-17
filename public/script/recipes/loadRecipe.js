@@ -1,6 +1,4 @@
 
-
-
 async function loadRecipe() {
     loadTemplate("tpLoadRecipe", divContent, true);
 
@@ -12,7 +10,7 @@ async function loadRecipe() {
     const descriptionContainer = document.getElementById("descriptionContainer");
 
     const token = localStorage.getItem("token");
-    const recipeId = localStorage.getItem("recipeId")
+    const recipeId = localStorage.getItem("recipeId");
     const response = await fetch("/user/recipe", {
         method: "GET",
         headers: {
@@ -21,18 +19,17 @@ async function loadRecipe() {
         }
     });
 
-
     if (response.ok) {
         const recipeData = await response.json();
-
 
         if (recipeData.length > 0) {
             const recipe = recipeData[0];
 
             const recipeName = document.createElement("h2");
-
             recipeName.innerHTML = recipe.name;
             nameContainer.appendChild(recipeName);
+
+            //
 
             const ingredients = JSON.parse(recipe.ingredients);
             for (let key in ingredients) {
@@ -43,6 +40,7 @@ async function loadRecipe() {
                 ingredientContainer.appendChild(ingredient)
             };
 
+            //
 
             const descriptions = JSON.parse(recipe.description);
             for (let key in descriptions) {
@@ -53,23 +51,20 @@ async function loadRecipe() {
                 descriptionContainer.appendChild(description)
             };
 
+            //
+
             btnEdit.addEventListener("click", function () {
                 editRecipe(recipe)
             });
-
         } else {
             console.error("No recipe data found");
         }
-
-
-
     } else {
         console.error("Failed to fetch recipe");
-    };
+    }
 
-    btnHome.addEventListener("click", homePage)
-
-}
+    btnHome.addEventListener("click", homePage);
+};
 
 
 

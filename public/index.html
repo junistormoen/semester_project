@@ -6,12 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My app</title>
 
+    <script src="./script/recipes/addRecipe.js"></script>
+    <script src="./script/recipes/editRecipe.js"></script>
+    <script src="./script/recipes/loadRecipe.js"></script>
+
+    <script src="./script/user/createUser.js"></script>
+    <script src="./script/user/editUser.js"></script>
+    <script src="./script/user/loadUser.js"></script>
+    <script src="./script/user/loginUser.js"></script>
+
+    <script src="./script/homePage.js"></script>
+    <script src="./script/loadPage.js"></script>
     <script src="./script/templateLoader.js"></script>
-    <script src="./script/pages.js"></script>
-    <script src="./script/user.js"></script>
-    <script src="./script/loadRecipe.js"></script>
-    <script src="./script/editRecipe.js"></script>
-    <script src="./script/addRecipe.js"></script>
+
 </head>
 
 <body>
@@ -24,15 +31,19 @@
 
     <!--  Templates -->
     <template id="tpLoginPage">
-        <form id="loginForm">
-            <input type="text" id="loginMail" placeholder="Email"> <br>
-            <input type="password" id="loginPassword" placeholder="Password"> <br>
-            <button id="btnSignIn" type="submit">Logg inn</button>
-            <button id="btnNewUser">Ny bruker</button>
-        </form>
+        <head>
+            <link rel="stylesheet" type="text/css" href="css/login.css">
+        </head>
+        <input type="text" id="loginMail" placeholder="Email"> <br>
+        <input type="password" id="loginPassword" placeholder="Password"> <br>
+        <button id="btnSignIn" type="submit">Logg inn</button>
+        <button id="btnNewUser">Ny bruker</button>
     </template>
 
     <template id="tpNewUser">
+        <head>
+            <link rel="stylesheet" type="text/css" href="css/newUser.css">
+        </head>
         <form id="newUserForm">
             Name : <input type="text" id="name"><br>
             Email: <input type="email" id="email"><br />
@@ -42,12 +53,19 @@
     </template>
 
     <template id="tpHomePage">
+        <head>
+            <link rel="stylesheet" type="text/css" href="css/homePage.css">
+        </head>
         <button id="btnAddRsp">Ny oppskrift</button>
         <button id="btnUser">Min Bruker</button>
         <div id="recipesContainer"></div>
     </template>
 
     <template id="tpAddRecipes">
+        <head>
+            <link rel="stylesheet" type="text/css" href="css/addRecipe.css">
+        </head>
+        <button id="btnHome">Hjem</button>
         <p>Navn</p>
         <input type="text" id="name">
         <br> <br>
@@ -66,16 +84,19 @@
         <input type="text" id="ingredient">
         <button id="addIngredient"> Legg til</button>
         <div id="ingredientContainer"></div>
-        <br><br>
+        <br>
         <p>Fremgangsmåte</p>
         <input type="text" id="description">
         <button id="addDescription">Legg til</button>
         <div id="descriptionContainer"></div>
-        <br> <br>
+        <br> 
         <button id="btnAdd">Lagre oppskrift</button>
     </template>
 
     <template id="tpUserPage">
+        <head>
+            <link rel="stylesheet" type="text/css" href="css/loadUser.css">
+        </head>
         <button id="btnHome">Hjem</button>
         <div id="userInfo"></div>
         <button id="btnEditUser">Rediger</button>
@@ -83,6 +104,9 @@
     </template>
 
     <template id="tpEditUser">
+        <head>
+            <link rel="stylesheet" type="text/css" href="css/editUser.css">
+        </head>
         Brukernavn <input id="editName" type="text"> <br>
         Epost <input id="editEmail" type="text"> <br>
         <button id="btnSave">Lagre</button>
@@ -90,6 +114,9 @@
     </template>
 
     <template id="tpLoadRecipe">
+        <head>
+            <link rel="stylesheet" type="text/css" href="css/loadRecipe.css">
+        </head>
         <button id="btnHome">Hjem</button>
         <button id="btnEdit">Rediger</button>
         <div id="nameContainer"></div>
@@ -103,6 +130,9 @@
     </template>
 
     <template id="tpEditRecipe">
+        <head>
+            <link rel="stylesheet" type="text/css" href="css/editRecipe.css">
+        </head>
         <button id="btnHome">Hjem</button>
         <button id="btnDelete">Slett oppskrift</button>
         <br>
@@ -136,4 +166,3 @@
 </html>
 
 <!-- https://semester-project-nul3.onrender.com -->
-

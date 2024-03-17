@@ -1,5 +1,4 @@
 
-
 async function editRecipe(recipe) {
     loadTemplate("tpEditRecipe", divContent, true);
 
@@ -16,32 +15,47 @@ async function editRecipe(recipe) {
     let ingredientLenght = 1;
     let descriptionLengt = 1;
 
-    console.log(recipe)
+    //
 
     const recipeName = document.createElement("input");
     recipeName.value = recipe.name;
     nameContainer.appendChild(recipeName);
 
-    const ingredients = JSON.parse(recipe.ingredients);
-    console.log(ingredients)
-    for (let key in ingredients) {
-        const ingredient = document.createElement("p");
-        const btnDeleteIngredient = document.createElement("button");
+    //
 
+    let ingredients = JSON.parse(recipe.ingredients);
+    for (let key in ingredients) {
+        const container = document.createElement("div"); // Opprett en container for ingrediensen og knappen
+
+        const ingredient = document.createElement("p");
         ingredient.innerHTML = ingredients[key].quantity + ingredients[key].value + " " + ingredients[key].type;
+
+        const btnDeleteIngredient = document.createElement("button");
         btnDeleteIngredient.innerHTML = "-";
 
-        ingredientContainer.appendChild(ingredient)
-        ingredientContainer.appendChild(btnDeleteIngredient);
+        container.appendChild(ingredient);
+        container.appendChild(btnDeleteIngredient);
+
+        ingredientContainer.appendChild(container);
 
         btnDeleteIngredient.addEventListener("click", function () {
             delete ingredients[key];
+
+            const updatedIngredients = {};
+            let newKey = 1;
+            for (const oldKey in ingredients) {
+                updatedIngredients[newKey++] = ingredients[oldKey];
+            }
+            ingredients = updatedIngredients;
+
             recipe.ingredients = JSON.stringify(ingredients);
             editRecipe(recipe);
-        })
+        });
 
         ingredientLenght++;
     }
+
+    //
 
     btnAddIngredient.addEventListener("click", function () {
         const quant = document.getElementById("quant").value;
@@ -50,44 +64,60 @@ async function editRecipe(recipe) {
 
         ingredient = { quantity: quant, value: val, type: type };
         ingredients[ingredientLenght] = ingredient;
-        console.log(ingredients)
 
         recipe.ingredients = JSON.stringify(ingredients);
         editRecipe(recipe);
     });
 
+    //
 
-    const descriptions = JSON.parse(recipe.description);
-    console.log(descriptions)
+    let descriptions = JSON.parse(recipe.description);
     for (let key in descriptions) {
         const description = document.createElement("p");
         const btnDeleteDescription = document.createElement("button");
 
-        description.innerHTML = descriptions[key].info;
+        description.innerHTML = key + ". " + descriptions[key].info;
         btnDeleteDescription.innerHTML = "-";
 
-        descriptionContainer.appendChild(description)
+        descriptionContainer.appendChild(description);
         descriptionContainer.appendChild(btnDeleteDescription);
 
         btnDeleteDescription.addEventListener("click", function () {
             delete descriptions[key];
+
+            const updatedDescriptions = {};
+            let newKey = 1;
+            for (const oldKey in descriptions) {
+                updatedDescriptions[newKey++] = descriptions[oldKey];
+            }
+            descriptions = updatedDescriptions;
+
             recipe.description = JSON.stringify(descriptions);
             editRecipe(recipe);
-        })
+        });
 
         descriptionLengt++;
-    }
+    };
 
+    //
 
     btnAddDescription.addEventListener("click", function () {
         const text = document.getElementById("newDescription").value;
 
+        const length = Object.keys(descriptions).length + 1;
+        console.log(length)
+        console.log(descriptions)
+
         description = { info: text };
-        descriptions[descriptionLengt] = description;
+        descriptions[length] = description;
+        console.log(length)
+        console.log(descriptions)
 
         recipe.description = JSON.stringify(descriptions);
         editRecipe(recipe);
     })
+
+    // 
 
     btnSave.addEventListener("click", function () {
         const newName = recipeName.value
@@ -95,10 +125,13 @@ async function editRecipe(recipe) {
         updateRecipe(recipe)
     })
 
+    //
+
     btnHome.addEventListener("click", homePage)
     btnDelete.addEventListener("click", deleteRecipe);
 };
 
+// ------------------------------
 
 async function updateRecipe(recipe) {
     const token = localStorage.getItem("token");
@@ -121,10 +154,9 @@ async function updateRecipe(recipe) {
     } else {
         console.error("Failed to update user information", response.statusText);
     }
+};
 
-}
-
-
+// ------------------------------
 
 async function deleteRecipe() {
     const token = localStorage.getItem("token");
@@ -140,11 +172,9 @@ async function deleteRecipe() {
 
     if (response.ok) {
         const result = await response.json();
-        console.log(result);
         localStorage.removeItem("recipeId");
         homePage();
     } else {
         console.error("Failed to delete recipe", response.statusText);
     }
-
-}
+};

@@ -1,0 +1,21 @@
+
+#editName,
+#editEmail {
+    margin-bottom: 10px;
+}
+
+#btnSave,
+#btnDeleteUser {
+    background-color: #b871c2;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+#btnSave:hover,
+#btnDeleteUser:hover {
+    background-color: #8d3fa0;
+}

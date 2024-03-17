@@ -1,0 +1,64 @@
+#btnHome,
+#btnDelete,
+#btnSave {
+    background-color: #b871c2;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+#btnHome:hover,
+#btnDelete:hover,
+#btnSave:hover {
+    background-color: #8d3fa0;
+}
+
+#nameContainer{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#ingredientContainer,
+#descriptionContainer {
+    margin-bottom: 2px;
+}
+
+#ingredientContainer h4,
+#descriptionContainer h4 {
+    margin-top: 30px;
+}
+
+#ingredientContainer input[type="number"],
+#ingredientContainer select,
+#ingredientContainer input[type="text"],
+#descriptionContainer input[type="text"] {
+    margin-bottom: 5px;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.container p {
+    margin-right: 10px;
+}
+
+.container button {
+    background-color: #b871c2;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+    margin-right: 10px;
+}
+
+.container button:hover {
+    background-color: #8d3fa0;
+}

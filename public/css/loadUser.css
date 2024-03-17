@@ -1,0 +1,26 @@
+
+#userInfo {
+    margin-top: 20px;
+}
+
+#userInfo p {
+    margin-bottom: 10px;
+}
+
+#btnHome,
+#btnEditUser,
+#btnLogOut {
+    background-color: #b871c2;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+#btnHome:hover,
+#btnEditUser:hover,
+#btnLogOut:hover {
+    background-color: #8d3fa0;
+}

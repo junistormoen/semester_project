@@ -1,0 +1,22 @@
+
+#loginMail, #loginPassword {
+    margin-bottom: 10px;
+}
+
+#btnSignIn, #btnNewUser {
+    background-color: #b871c2;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#btnSignIn:hover, #btnNewUser:hover {
+    background-color: #8d3fa0;
+}
+
+.errorMessage {
+    color: red;
+    margin-top: 10px;
+}

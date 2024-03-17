@@ -1,0 +1,32 @@
+
+#btnHome,
+#btnEdit {
+    background-color: #b871c2;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+#btnHome:hover,
+#btnEdit:hover {
+    background-color: #8d3fa0;
+}
+
+#nameContainer,
+#ingredientContainer,
+#descriptionContainer {
+    margin-bottom: 20px;
+}
+
+#ingredientContainer h4,
+#descriptionContainer h4 {
+    margin-bottom: 10px;
+}
+
+#ingredientContainer p,
+#descriptionContainer p {
+    margin-bottom: 5px;
+}
